@@ -1,7 +1,8 @@
 import { Navigation, SelectedMenu } from '@components';
-import { Layout } from 'antd';
+import { FloatButton, Layout } from 'antd';
 import { useState } from 'react';
 import { NavigationEnum } from '@types';
+import { SettingOutlined } from '@ant-design/icons';
 
 function App() {
   const [selectedMenu, setSelectedMenu] = useState<NavigationEnum>(NavigationEnum.Download);
@@ -10,6 +11,8 @@ function App() {
     <Layout>
       <Navigation setSelectedMenu={setSelectedMenu} />
       <SelectedMenu selectedMenu={selectedMenu} />
+      <FloatButton icon={<SettingOutlined />} />
+      //TODO: Add React-Router
     </Layout>
   );
 }
