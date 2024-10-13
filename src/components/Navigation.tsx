@@ -1,16 +1,18 @@
-import { FileUnknownFilled, SoundFilled, YoutubeFilled } from '@ant-design/icons';
-import { Menu, MenuProps } from 'antd';
+import {
+  FileUnknownFilled,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  SoundFilled,
+  YoutubeFilled,
+} from '@ant-design/icons';
+import { Button, Flex, Menu, MenuProps } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import { MenuItemType } from 'antd/es/menu/interface';
-import { Dispatch, FC, SetStateAction, useState } from 'react';
+import { FC, useState } from 'react';
 import { NavigationEnum } from '../types/NavigationEnum';
 import { useNavigate } from 'react-router-dom';
 
 type OnSelectEventHandler = MenuProps['onSelect'];
-
-type propsType = {
-  setSelectedMenu: Dispatch<SetStateAction<NavigationEnum>>;
-};
 
 const menu: MenuItemType[] = [
   {
@@ -44,8 +46,17 @@ export const Navigation: FC = () => {
   };
 
   return (
-    <Sider collapsed={collapsed}>
+    <Sider collapsed={collapsed} style={{ minHeight: '100vh' }}>
+      <Flex justify='center'>
+        <Button
+          type='link'
+          onClick={toggleCollapsed}
+          style={{ marginInline: 4, marginBlockStart: 4 }}>
+          {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+        </Button>
+      </Flex>
       <Menu
+        motion={{}}
         defaultSelectedKeys={[NavigationEnum.Download]}
         mode='inline'
         theme='dark'
