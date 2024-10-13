@@ -4,6 +4,7 @@ import Sider from 'antd/es/layout/Sider';
 import { MenuItemType } from 'antd/es/menu/interface';
 import { Dispatch, FC, SetStateAction, useState } from 'react';
 import { NavigationEnum } from '../types/NavigationEnum';
+import { useNavigate } from 'react-router-dom';
 
 type OnSelectEventHandler = MenuProps['onSelect'];
 
@@ -30,15 +31,16 @@ const menu: MenuItemType[] = [
   },
 ];
 
-export const Navigation: FC<propsType> = props => {
+export const Navigation: FC = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const navigate = useNavigate();
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
 
   const handleSelection: OnSelectEventHandler = e => {
-    props.setSelectedMenu(NavigationEnum[e.key as keyof typeof NavigationEnum]);
+    navigate(`/${e.key}`);
   };
 
   return (
