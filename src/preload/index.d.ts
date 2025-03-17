@@ -1,8 +1,9 @@
-import { ElectronAPI } from '@electron-toolkit/preload'
-
-declare global {
-  interface Window {
-    electron: ElectronAPI
-    api: unknown
-  }
+type Electron_IPC = {
+  getYtInfo: (url: string) => Promise<{ title: string; author: string }>
 }
+
+// declare global {
+interface Window {
+  electron: Electron_IPC
+}
+// }
