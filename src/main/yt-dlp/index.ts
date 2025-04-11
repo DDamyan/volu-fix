@@ -1,83 +1,58 @@
-import { spawn } from 'child_process'
+import { DEFAULT_MP3_PARAMS } from './params'
+import { extractDownloadPercent } from './utils'
+import { spawnProcess } from './spawnProcess'
 
-// Path to your .exe file
-// const exePath = path './resources/yt-dlp.exe'
-const exePath = 'G:\\Quellcode\\volu-fix\\resources\\yt-dlp.exe'
-const ffmpegPath = 'G:\\Quellcode\\volu-fix\\resources\\'
+// important links
+// https://github.com/yt-dlp/yt-dlp?tab=readme-ov-file
+// https://github.com/microlinkhq/youtube-dl-exec/blob/master/src/index.js
 
-const downloadPath = 'G:\\Quellcode\\volu-fix\\ytdlp download'
+class YTDLP {
+  static download(url: string, progressCallback: (percent: number) => void): void {
+    spawnProcess({
+      args: [url, ...DEFAULT_MP3_PARAMS],
+      onProgress: (data: string) => {
+        const downloadPercent = extractDownloadPercent(data)
+        if (downloadPercent !== null) progressCallback(downloadPercent)
+      }
+    })
+      .then(() => {
+        console.log('Download complete!')
+      })
+      .catch((error) => {
+        console.error('Error!!!:', error)
+      })
+    // const params = [url, ...DEFAULT_MP3_PARAMS]
 
-const params = [
-  'https://www.youtube.com/watch?v=fYnvKYN9_CE',
-  // '-s',
-  '--progress',
-  // '--progress-template',
-  // 'download:[download]%(progress._percent_str)s',
-  // '--newline',
+    // const proc = spawn(YTDLP_PATH, params)
+    // // , {
+    // //   shell: true,
+    // //   detached: true,
+    // //   windowsHide: true
+    // // })
 
-  '--ffmpeg-location',
-  ffmpegPath,
+    // proc.stderr.setEncoding('utf8')
+    // proc.stderr.on('data', (data) => {
+    //   if (data.includes('Video unavailable')) {
+    //     throw new Error('Video unavailable')
+    //   }
 
-  '--extract-audio',
-  '--audio-format',
-  'mp3',
+    //   throw new Error(data)
+    // })
 
-  // '--format',
-  // 'ba',
+    // proc.stdout.setEncoding('utf8')
+    // proc.stdout.on('data', (data: string) => {
+    //   if (data.includes('file is already')) {
+    //     console.error('File already exists')
+    //   }
 
-  '--paths',
-  downloadPath
-
-  // '--quiet'
-  // '--no-warnings'
-]
-
-// const command = `"${exePath}" ${params.join(' ')}`
-
-//-P, --paths [TYPES:]PATH
-//--restrict-filenames
-//--write-playlist-metafiles
-//--embed-thumbnail
-
-// Run the .exe
-// const cp = exec(command, (error, stdout, stderr) => {
-//   if (error) {
-//     console.error(`exec error: ${error}`)
-//     return
-//   }
-//   if (stderr) {
-//     console.error(`stderr: ${stderr}`)
-//   }
-//   console.log(`stdout: ${stdout}`)
-// })
-
-const ytdlp = spawn(exePath, params)
-
-// ytdlp.stderr.setEncoding('utf8')
-ytdlp.stderr.on('data', (data) => {
-  console.error(`stderr: ${data}`)
-  // const lines = data.split('\n')
-})
-
-ytdlp.stdout.on('error', (data) => {
-  console.log(`stdout !!error!!: ${data}`)
-})
-
-// ytdlp.stdout.setEncoding('utf8')
-ytdlp.stdout.on('data', (data) => {
-  console.log(`stdout: ${data}`)
-
-  if (data.includes('file is already')) {
-    console.error('File already exists')
+    //   const downloadPercent = extractDownloadPercent(data)
+    //   if (downloadPercent !== null) progressCallback(downloadPercent)
+    // })
   }
+}
 
-  //TODO: parse the data to get the download progress !!!!
+function test_callback_download(percent: number) {
+  console.log(`${percent}/100`)
+}
 
-  // const lines = data.split('\n')
-  // const downloadProcess = lines.find((line) => line.includes('[download]'))
-  // console.log(downloadProcess)
-})
-
-ytdlp.on('close', (code) => {
-  console.error(`stderr - code: ${code}`)
-})
+YTDLP.download('b2rcpxNuHJM', test_callback_download)
